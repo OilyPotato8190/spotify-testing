@@ -48,11 +48,22 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
       const results = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=${type}&limit=${limit}`, {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`,
         },
       });
       const text = JSON.parse(await results.text());
       const uri = text.tracks.items[0];
+      await fetch('https://api.spotify.com/v1/me/player/play', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          'context_uri': 'spotify:album:0bonetp5MQCgGJDkjUDDT0',
+        }),
+      });
+      console.log((await getQueue()).queue.map((x) => x.name));
     };
   });
 

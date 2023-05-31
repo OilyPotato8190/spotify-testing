@@ -78,6 +78,10 @@ app.get('/getToken', (req, res) => {
   res.send(access_token);
 });
 
+app.get('/favicon.ico', (req, res) => {
+  res.sendStatus(204);
+});
+
 app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}`);
 });
