@@ -37,22 +37,24 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
       },
       body: JSON.stringify({
         device_ids: [device_id],
-        play: true,
       }),
-    });
+    }).then(() => console.log('transfered playback'));
 
-    document.getElementById('test').onclick = async function () {
-      const query = 'david';
+    document.getElementById('choose').onclick = async function () {
+      const query = document.getElementById('song-input').value;
+      if (!query) return;
       const type = 'track';
-      const limit = 5;
+      const limit = 1;
+
       const results = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=${type}&limit=${limit}`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const text = JSON.parse(await results.text());
-      const uri = text.tracks.items[0];
+      const track = text.tracks.items[0];
+
       await fetch('https://api.spotify.com/v1/me/player/play', {
         method: 'PUT',
         headers: {
@@ -60,9 +62,12 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          'context_uri': 'spotify:album:0bonetp5MQCgGJDkjUDDT0',
+          uris: [track.uri],
         }),
-      });
+      }).then(() => console.log(`chose song ${track.name}`));
+    };
+
+    document.getElementById('queue').onclick = async function () {
       console.log((await getQueue()).queue.map((x) => x.name));
     };
   });
@@ -84,7 +89,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
     console.error(message);
   });
 
-  document.getElementById('togglePlay').onclick = function () {
+  document.getElementById('togglePlay').onclick = async function () {
     player.togglePlay();
   };
 
