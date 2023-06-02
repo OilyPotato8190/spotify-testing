@@ -26,6 +26,8 @@ let generateRandomString = function (length) {
 
 let app = express();
 
+app.use(express.text());
+
 app.get('/', (req, res) => {
   if (!access_token) return res.redirect('/auth/login');
   app.use(express.static('public'));
@@ -80,6 +82,10 @@ app.get('/getToken', (req, res) => {
 
 app.get('/favicon.ico', (req, res) => {
   res.sendStatus(204);
+});
+
+app.put('/sendQuery', (req, res) => {
+  console.log(req.body);
 });
 
 app.listen(port, () => {
